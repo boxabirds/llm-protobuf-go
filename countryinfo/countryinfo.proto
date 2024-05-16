@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package countryinfo;
+option go_package = "./protobuf";
+
+
+
+message CountryRequest {
+  string country = 1;
+}
+
+message CountryResponse {
+  string country = 1;
+  int32 country_population = 2;
+  string capital = 3;
+  int32 capital_population = 4;
+  int64 gdp_usd = 5;
+}
