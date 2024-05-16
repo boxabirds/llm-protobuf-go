@@ -14,16 +14,44 @@ import (
 )
 
 func main() {
-	// Define and parse the command-line flag
+	// Define and parse the command-line flags
 	country := flag.String("country", "United Kingdom", "Name of the country to request information for")
+	baseURL := flag.String("base-url", "", "Optional base URL for the OpenAI API")
+	model := flag.String("model", "", "Model to use for the OpenAI API")
 	flag.Parse()
 
-	apiKey, exists := os.LookupEnv("OPENAI_API_KEY")
-	if !exists {
-		log.Fatal("OPENAI_API_KEY environment variable is not set")
+	var apiKey string
+	if *baseURL != "" {
+		// If base URL is specified, use "ollama" as the API key
+		apiKey = "ollama"
+		// Ensure model is provided if base URL is specified
+		if *model == "" {
+			log.Fatal("Model must be provided when base-url is specified")
+		}
+	} else {
+		// Otherwise, check for the OPENAI_API_KEY environment variable
+		var exists bool
+		apiKey, exists = os.LookupEnv("OPENAI_API_KEY")
+		if !exists {
+			log.Fatal("OPENAI_API_KEY environment variable is not set")
+		}
+		// Use default model if not provided
+		if *model == "" {
+			*model = openai.GPT3Dot5Turbo
+		}
 	}
 
-	client := openai.NewClient(apiKey)
+	var client *openai.Client
+	if *baseURL != "" {
+		// Create a custom configuration with the provided base URL
+		config := openai.DefaultConfig(apiKey)
+		config.BaseURL = *baseURL
+		client = openai.NewClientWithConfig(config)
+	} else {
+		// Create a client with the default configuration
+		client = openai.NewClient(apiKey)
+	}
+
 	ctx := context.Background()
 
 	// Define the system prompt
@@ -44,7 +72,7 @@ func main() {
 	  `
 
 	req := openai.ChatCompletionRequest{
-		Model:     openai.GPT3Dot5Turbo,
+		Model:     *model,
 		MaxTokens: 1000, // Increased max tokens to 1000
 		Messages: []openai.ChatCompletionMessage{
 			{
