@@ -55,7 +55,7 @@ func main() {
 	ctx := context.Background()
 
 	// Define the system prompt
-	systemPrompt := `You are a programmatic country information API used software applications. 
+	systemPrompt := `You are a programmatic country information API used by software applications. 
 	All input messages provided MUST adhere to the CountryRequest schema: validate them and throw an error if not. 
 	Your responses MUST adhere to the CountryResponse schema ONLY with no additional narrative or markup, backquotes or anything.
 	message CountryRequest {
