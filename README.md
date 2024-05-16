@@ -1,0 +1,12 @@
+This document provides instructions for command-line usage of the CountryInfo subproject.
+
+Problem
+How do you impose structure on the input and output of LLM services? In Python, there are at least five different ways including outlines, instructor, marginalia, etc. In Go, there are no existing libraries to handle this, so this project presents a proof of concept (POC) using protobufjson.
+
+Solution
+This POC in Go uses protobufjson for structuring input and output of LLM services.
+
+Requirements
+Go
+protoc (Protocol Buffers Compiler)
+OpenAI API key set in OPENAI_API_KEY environment variable
